@@ -1,0 +1,4 @@
+,y1,y2,y3
+maximization(1)_or_minimization(-1)_or_range(0),0,1,-1
+lower_limit,8.2,0,0
+upper_limit,9,0,0

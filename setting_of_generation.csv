@@ -1,0 +1,5 @@
+,raw material 1,raw material 2,raw material 3,temperature,time
+upper,1,0.6,0.95,110,130
+lower,0,0,0,40,5
+group with a total of desired_sum_of_components,1,1,1,0,0
+rounding,2,2,2,0,-1
