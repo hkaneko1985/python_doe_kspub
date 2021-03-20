@@ -18,7 +18,7 @@ acquisition_function = 'PTR'  # 'PTR', 'PI', 'EI', 'MI'
 
 fold_number = 10  # クロスバリデーションの fold 数
 kernel_number = 2  # 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-targeg_range = [0, 1]  # PTR
+target_range = [0, 1]  # PTR
 relaxation = 0.01  # EI, PI
 delta = 10 ** -6  # MI
 
@@ -169,10 +169,10 @@ for sample_number in range(number_of_selecting_samples):
         acquisition_function_prediction = norm.cdf(
                 (estimated_y_prediction - max(y) - relaxation * y.std()) / estimated_y_prediction_std)
     elif acquisition_function == 'PTR':
-        acquisition_function_prediction = norm.cdf(targeg_range[1],
+        acquisition_function_prediction = norm.cdf(target_range[1],
                                                    loc=estimated_y_prediction,
                                                    scale=estimated_y_prediction_std
-                                                   ) - norm.cdf(targeg_range[0],
+                                                   ) - norm.cdf(target_range[0],
                                                                 loc=estimated_y_prediction,
                                                                 scale=estimated_y_prediction_std)
     acquisition_function_prediction[estimated_y_prediction_std <= 0] = 0

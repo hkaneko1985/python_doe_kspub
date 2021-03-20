@@ -18,7 +18,6 @@ regression_method = 'gpr_one_kernel'  # gpr_one_kernel', 'gpr_kernels'
 fold_number = 10  # クロスバリデーションの fold 数
 kernel_number = 2  # 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
 relaxation = 0.01  # MI, EI, PI
-targeg_range = [0, 1]  # Probability of target range
 
 dataset = pd.read_csv('training_data_multi_y.csv', index_col=0, header=0)
 x_prediction = pd.read_csv('x_for_prediction_multi_y.csv', index_col=0, header=0)
