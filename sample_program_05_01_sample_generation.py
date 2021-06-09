@@ -26,7 +26,7 @@ if setting_of_generation.iloc[2, :].sum() != 0:
         variable_numbers = np.where(setting_of_generation.iloc[2, :] == group_number)[0]
         actual_sum_of_components = x_generated[:, variable_numbers].sum(axis=1)
         actual_sum_of_components_converted = np.matlib.repmat(np.reshape(actual_sum_of_components, (x_generated.shape[0], 1)) , 1, len(variable_numbers))
-        x_generated[:, variable_numbers] = x_generated[:, variable_numbers] / actual_sum_of_components_converted
+        x_generated[:, variable_numbers] = x_generated[:, variable_numbers] / actual_sum_of_components_converted * desired_sum_of_components
         deleting_sample_numbers, _ = np.where(x_generated > x_upper.values)
         x_generated = np.delete(x_generated, deleting_sample_numbers, axis=0)
         deleting_sample_numbers, _ = np.where(x_generated < x_lower.values)
