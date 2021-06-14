@@ -58,7 +58,7 @@ if regression_method == 'gpr_one_kernel':
 elif regression_method == 'gpr_kernels':
     # クロスバリデーションによるカーネル関数の最適化
     cross_validation = KFold(n_splits=fold_number, random_state=9, shuffle=True) # クロスバリデーションの分割の設定
-    r2cvs = [] # 空の list。主成分の数ごとに、クロスバリデーション後の r2 を入れていきます
+    r2cvs = [] # 空の list。カーネル関数ごとに、クロスバリデーション後の r2 を入れていきます
     for index, kernel in enumerate(kernels):
         print(index + 1, '/', len(kernels))
         model = GaussianProcessRegressor(alpha=0, kernel=kernel)
