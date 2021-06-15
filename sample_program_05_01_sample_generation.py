@@ -20,7 +20,7 @@ x_upper = setting_of_generation.iloc[0, :]  # 上限値
 x_lower = setting_of_generation.iloc[1, :]  # 下限値
 x_generated = x_generated * (x_upper.values - x_lower.values) + x_lower.values  # 上限値から下限値までの間に変換
 
-# 合計を 1 にする特徴量がある場合
+# 合計を desired_sum_of_components にする特徴量がある場合
 if setting_of_generation.iloc[2, :].sum() != 0:
     for group_number in range(1, int(setting_of_generation.iloc[2, :].max()) + 1):
         variable_numbers = np.where(setting_of_generation.iloc[2, :] == group_number)[0]
