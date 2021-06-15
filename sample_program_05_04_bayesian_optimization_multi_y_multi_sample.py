@@ -207,11 +207,11 @@ for sample_number in range(number_of_selecting_samples):
         sum_of_log_probabilities.to_csv('sum_of_log_probabilities_prediction_multi_y_{0}.csv'.format(regression_method))
 
     # 次のサンプル
-    next_samples = pd.concat([next_samples, x_prediction.iloc[sum_of_log_probabilities.idxmax(), :]], axis=0)
+    next_samples = pd.concat([next_samples, x_prediction.loc[sum_of_log_probabilities.idxmax()]], axis=0)
     
     # x, y, x_prediction, cumulative_variance の更新
-    x = pd.concat([x, x_prediction.iloc[sum_of_log_probabilities.idxmax(), :]], axis=0)
-    y = pd.concat([y, estimated_y_prediction_all.iloc[sum_of_log_probabilities.idxmax(), :]], axis=0)
+    x = pd.concat([x, x_prediction.loc[sum_of_log_probabilities.idxmax()]], axis=0)
+    y = pd.concat([y, estimated_y_prediction_all.loc[sum_of_log_probabilities.idxmax()]], axis=0)
     x_prediction = x_prediction.drop(sum_of_log_probabilities.idxmax(), axis=0)
     print('sample number : {0} / {1}'.format(sample_number + 1, number_of_selecting_samples))
             

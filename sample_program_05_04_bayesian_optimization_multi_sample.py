@@ -187,11 +187,11 @@ for sample_number in range(number_of_selecting_samples):
         acquisition_function_prediction.to_csv('acquisition_function_prediction_{0}_{1}.csv'.format(regression_method, acquisition_function))  # 獲得関数を csv ファイルに保存。同じ名前のファイルがあるときは上書きされますので注意してください
 
     # 次のサンプル
-    next_samples = pd.concat([next_samples, x_prediction.iloc[acquisition_function_prediction.idxmax(), :]], axis=0)
+    next_samples = pd.concat([next_samples, x_prediction.loc[acquisition_function_prediction.idxmax()]], axis=0)
     
     # x, y, x_prediction, cumulative_variance の更新
-    x = pd.concat([x, x_prediction.iloc[acquisition_function_prediction.idxmax(), :]], axis=0)
-    y = pd.concat([y, estimated_y_prediction.iloc[acquisition_function_prediction.idxmax(), 0]], axis=0)
+    x = pd.concat([x, x_prediction.loc[acquisition_function_prediction.idxmax()]], axis=0)
+    y = pd.concat([y, estimated_y_prediction.loc[acquisition_function_prediction.idxmax()].iloc[0]], axis=0)
     x_prediction = x_prediction.drop(acquisition_function_prediction.idxmax(), axis=0)
     cumulative_variance = np.delete(cumulative_variance, np.where(acquisition_function_prediction.index == acquisition_function_prediction.iloc[:, 0].idxmax())[0][0])
     print('sample number : {0} / {1}'.format(sample_number + 1, number_of_selecting_samples))
