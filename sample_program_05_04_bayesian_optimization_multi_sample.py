@@ -36,17 +36,17 @@ x_prediction = x_prediction.drop(deleting_variables, axis=1)
 cumulative_variance = np.zeros(x_prediction.shape[0]) # MI で必要な "ばらつき" を 0 で初期化
 
 # カーネル 11 種類
-kernels = [DotProduct() + WhiteKernel(),
+kernels = [ConstantKernel() * DotProduct() + WhiteKernel(),
            ConstantKernel() * RBF() + WhiteKernel(),
-           ConstantKernel() * RBF() + WhiteKernel() + DotProduct(),
+           ConstantKernel() * RBF() + WhiteKernel() + ConstantKernel() * DotProduct(),
            ConstantKernel() * RBF(np.ones(x.shape[1])) + WhiteKernel(),
-           ConstantKernel() * RBF(np.ones(x.shape[1])) + WhiteKernel() + DotProduct(),
+           ConstantKernel() * RBF(np.ones(x.shape[1])) + WhiteKernel() + ConstantKernel() * DotProduct(),
            ConstantKernel() * Matern(nu=1.5) + WhiteKernel(),
-           ConstantKernel() * Matern(nu=1.5) + WhiteKernel() + DotProduct(),
+           ConstantKernel() * Matern(nu=1.5) + WhiteKernel() + ConstantKernel() * DotProduct(),
            ConstantKernel() * Matern(nu=0.5) + WhiteKernel(),
-           ConstantKernel() * Matern(nu=0.5) + WhiteKernel() + DotProduct(),
+           ConstantKernel() * Matern(nu=0.5) + WhiteKernel() + ConstantKernel() * DotProduct(),
            ConstantKernel() * Matern(nu=2.5) + WhiteKernel(),
-           ConstantKernel() * Matern(nu=2.5) + WhiteKernel() + DotProduct()]
+           ConstantKernel() * Matern(nu=2.5) + WhiteKernel() + ConstantKernel() * DotProduct()]
 
 # Bayesian optimization
 next_samples = pd.DataFrame([], columns=x_prediction.columns)  # 次のサンプルを入れる変数を準備
