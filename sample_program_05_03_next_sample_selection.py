@@ -66,17 +66,17 @@ x = x.drop(deleting_variables, axis=1)
 x_prediction = x_prediction.drop(deleting_variables, axis=1)
 
 # カーネル 11 種類
-kernels = [DotProduct() + WhiteKernel(),
+kernels = [ConstantKernel() * DotProduct() + WhiteKernel(),
            ConstantKernel() * RBF() + WhiteKernel(),
-           ConstantKernel() * RBF() + WhiteKernel() + DotProduct(),
+           ConstantKernel() * RBF() + WhiteKernel() + ConstantKernel() * DotProduct(),
            ConstantKernel() * RBF(np.ones(x.shape[1])) + WhiteKernel(),
-           ConstantKernel() * RBF(np.ones(x.shape[1])) + WhiteKernel() + DotProduct(),
+           ConstantKernel() * RBF(np.ones(x.shape[1])) + WhiteKernel() + ConstantKernel() * DotProduct(),
            ConstantKernel() * Matern(nu=1.5) + WhiteKernel(),
-           ConstantKernel() * Matern(nu=1.5) + WhiteKernel() + DotProduct(),
+           ConstantKernel() * Matern(nu=1.5) + WhiteKernel() + ConstantKernel() * DotProduct(),
            ConstantKernel() * Matern(nu=0.5) + WhiteKernel(),
-           ConstantKernel() * Matern(nu=0.5) + WhiteKernel() + DotProduct(),
+           ConstantKernel() * Matern(nu=0.5) + WhiteKernel() + ConstantKernel() * DotProduct(),
            ConstantKernel() * Matern(nu=2.5) + WhiteKernel(),
-           ConstantKernel() * Matern(nu=2.5) + WhiteKernel() + DotProduct()]
+           ConstantKernel() * Matern(nu=2.5) + WhiteKernel() + ConstantKernel() * DotProduct()]
 
 # オートスケーリング
 autoscaled_y = (y - y.mean()) / y.std()
