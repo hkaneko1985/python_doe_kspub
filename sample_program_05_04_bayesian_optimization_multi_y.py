@@ -128,7 +128,7 @@ for y_number in range(number_of_y_variables):
     
     # クロスバリデーションによる y の値の推定
     cross_validation = KFold(n_splits=fold_number, random_state=9, shuffle=True) # クロスバリデーションの分割の設定
-    autoscaled_estimated_y_in_cv = cross_val_predict(model, autoscaled_x, autoscaled_y.iloc[:, y_number])  # y の推定
+    autoscaled_estimated_y_in_cv = cross_val_predict(model, autoscaled_x, autoscaled_y.iloc[:, y_number], cv=cross_validation)  # y の推定
     estimated_y_in_cv = autoscaled_estimated_y_in_cv * y.iloc[:, y_number].std() + y.iloc[:, y_number].mean()  # スケールをもとに戻す
     estimated_y_in_cv = pd.DataFrame(estimated_y_in_cv, index=x.index, columns=['estimated_y'])
     
