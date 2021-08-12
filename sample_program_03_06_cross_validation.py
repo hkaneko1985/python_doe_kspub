@@ -69,7 +69,7 @@ results_train.to_csv('estimated_y_in_detail_ols.csv')  # 推定値を csv ファ
 
 # クロスバリデーションによる y の値の推定
 cross_validation = KFold(n_splits=fold_number, random_state=9, shuffle=True) # クロスバリデーションの分割の設定
-autoscaled_estimated_y_in_cv = cross_val_predict(model, autoscaled_x, autoscaled_y)  # y の推定
+autoscaled_estimated_y_in_cv = cross_val_predict(model, autoscaled_x, autoscaled_y, cv=cross_validation)  # y の推定
 estimated_y_in_cv = autoscaled_estimated_y_in_cv * y.std() + y.mean()  # スケールをもとに戻す
 estimated_y_in_cv = pd.DataFrame(estimated_y_in_cv, index=x.index, columns=['estimated_y'])
 
