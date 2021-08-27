@@ -18,7 +18,7 @@ all_indexes = list(range(x_generated.shape[0]))
 np.random.seed(11) # 乱数を生成するためのシードを固定
 for random_search_number in range(number_of_random_searches):
     # 1. ランダムに候補を選択
-    new_selected_indexes = np.random.choice(all_indexes, number_of_selecting_samples)
+    new_selected_indexes = np.random.choice(all_indexes, number_of_selecting_samples, replace=False)
     new_selected_samples = x_generated.iloc[new_selected_indexes, :]
     # 2. オートスケーリングした後に D 最適基準を計算
     autoscaled_new_selected_samples = (new_selected_samples - new_selected_samples.mean()) / new_selected_samples.std()
