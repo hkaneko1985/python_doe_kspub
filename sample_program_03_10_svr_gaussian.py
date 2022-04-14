@@ -13,7 +13,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 number_of_test_samples = 5  # テストデータのサンプル数
-fold_number = 10  # クロスバリデーションの fold 数
+fold_number = 5  # クロスバリデーションの fold 数
 nonlinear_svr_cs = 2 ** np.arange(-5, 11, dtype=float) # SVR の C の候補
 nonlinear_svr_epsilons = 2 ** np.arange(-10, 1, dtype=float) # SVR の ε の候補
 nonlinear_svr_gammas = 2 ** np.arange(-20, 11, dtype=float) # SVR のガウシアンカーネルの γ の候補

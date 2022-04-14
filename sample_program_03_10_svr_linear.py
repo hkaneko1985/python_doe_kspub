@@ -13,7 +13,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 number_of_test_samples = 5  # テストデータのサンプル数
-fold_number = 10  # クロスバリデーションの fold 数
+fold_number = 5  # クロスバリデーションの fold 数
 linear_svr_cs = 2 ** np.arange(-10, 5, dtype=float) # 線形SVR の C の候補
 linear_svr_epsilons = 2 ** np.arange(-10, 0, dtype=float) # 線形SVRの ε の候補
 
