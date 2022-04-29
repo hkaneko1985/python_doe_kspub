@@ -10,6 +10,7 @@ number_of_selecting_samples = 30  # 選択するサンプル数
 number_of_random_searches = 1000  # ランダムにサンプルを選択して D 最適基準を計算する繰り返し回数
 
 x_generated = pd.read_csv('generated_samples.csv', index_col=0, header=0)
+autoscaled_x_generated = (x_generated - x_generated.mean()) / x_generated.std()
 
 # 実験条件の候補のインデックスの作成
 all_indexes = list(range(x_generated.shape[0]))
@@ -19,7 +20,7 @@ np.random.seed(11) # 乱数を生成するためのシードを固定
 for random_search_number in range(number_of_random_searches):
     # 1. ランダムに候補を選択
     new_selected_indexes = np.random.choice(all_indexes, number_of_selecting_samples, replace=False)
-    new_selected_samples = x_generated.iloc[new_selected_indexes, :]
+    new_selected_samples = autoscaled_x_generated.iloc[new_selected_indexes, :]
     # 2. オートスケーリングした後に D 最適基準を計算
     autoscaled_new_selected_samples = (new_selected_samples - new_selected_samples.mean()) / new_selected_samples.std()
     xt_x = np.dot(autoscaled_new_selected_samples.T, autoscaled_new_selected_samples)
