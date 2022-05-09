@@ -109,23 +109,28 @@ elif regression_method == 'svr_gaussian':
     
     cross_validation = KFold(n_splits=fold_number, random_state=9, shuffle=True) # クロスバリデーションの分割の設定
     # CV による ε の最適化
-    gs_cv = GridSearchCV(SVR(kernel='rbf', C=3, gamma=optimal_nonlinear_gamma),
-                         {'epsilon': nonlinear_svr_epsilons},
-                         cv=cross_validation)
-    gs_cv.fit(autoscaled_x, autoscaled_y)
-    optimal_nonlinear_epsilon = gs_cv.best_params_['epsilon']
+    r2cvs = [] # 空の list。候補ごとに、クロスバリデーション後の r2 を入れていきます
+    for nonlinear_svr_epsilon in nonlinear_svr_epsilons:
+        model = SVR(kernel='rbf', C=3, epsilon=nonlinear_svr_epsilon, gamma=optimal_nonlinear_gamma)
+        autoscaled_estimated_y_in_cv = cross_val_predict(model, autoscaled_x, autoscaled_y, cv=cross_validation)
+        r2cvs.append(r2_score(y, autoscaled_estimated_y_in_cv * y.std() + y.mean()))
+    optimal_nonlinear_epsilon = nonlinear_svr_epsilons[np.where(r2cvs==np.max(r2cvs))[0][0]] # クロスバリデーション後の r2 が最も大きい候補
+    
     # CV による C の最適化
-    gs_cv = GridSearchCV(SVR(kernel='rbf', epsilon=optimal_nonlinear_epsilon, gamma=optimal_nonlinear_gamma),
-                         {'C': nonlinear_svr_cs},
-                         cv=cross_validation)
-    gs_cv.fit(autoscaled_x, autoscaled_y)
-    optimal_nonlinear_c = gs_cv.best_params_['C']
+    r2cvs = [] # 空の list。候補ごとに、クロスバリデーション後の r2 を入れていきます
+    for nonlinear_svr_c in nonlinear_svr_cs:
+        model = SVR(kernel='rbf', C=nonlinear_svr_c, epsilon=optimal_nonlinear_epsilon, gamma=optimal_nonlinear_gamma)
+        autoscaled_estimated_y_in_cv = cross_val_predict(model, autoscaled_x, autoscaled_y, cv=cross_validation)
+        r2cvs.append(r2_score(y, autoscaled_estimated_y_in_cv * y.std() + y.mean()))
+    optimal_nonlinear_c = nonlinear_svr_cs[np.where(r2cvs==np.max(r2cvs))[0][0]] # クロスバリデーション後の r2 が最も大きい候補
+    
     # CV による γ の最適化
-    gs_cv = GridSearchCV(SVR(kernel='rbf', epsilon=optimal_nonlinear_epsilon, C=optimal_nonlinear_c),
-                         {'gamma': nonlinear_svr_gammas},
-                         cv=cross_validation)
-    gs_cv.fit(autoscaled_x, autoscaled_y)
-    optimal_nonlinear_gamma = gs_cv.best_params_['gamma']
+    r2cvs = [] # 空の list。候補ごとに、クロスバリデーション後の r2 を入れていきます
+    for nonlinear_svr_gamma in nonlinear_svr_gammas:
+        model = SVR(kernel='rbf', C=optimal_nonlinear_c, epsilon=optimal_nonlinear_epsilon, gamma=nonlinear_svr_gamma)
+        autoscaled_estimated_y_in_cv = cross_val_predict(model, autoscaled_x, autoscaled_y, cv=cross_validation)
+        r2cvs.append(r2_score(y, autoscaled_estimated_y_in_cv * y.std() + y.mean()))
+    optimal_nonlinear_gamma = nonlinear_svr_gammas[np.where(r2cvs==np.max(r2cvs))[0][0]] # クロスバリデーション後の r2 が最も大きい候補
     # 結果の確認
     print('最適化された C : {0} (log(C)={1})'.format(optimal_nonlinear_c, np.log2(optimal_nonlinear_c)))
     print('最適化された ε : {0} (log(ε)={1})'.format(optimal_nonlinear_epsilon, np.log2(optimal_nonlinear_epsilon)))

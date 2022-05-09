@@ -6,7 +6,8 @@
 import numpy as np
 import pandas as pd
 from sklearn.svm import SVR
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import KFold, cross_val_predict
+from sklearn.metrics import r2_score
 
 number_of_sub_datasets = 30  # サブデータセットの数
 rate_of_selected_x_variables = 0.75  # 各サブデータセットで選択される説明変数の数の割合。0 より大きく 1 未満
@@ -55,21 +56,30 @@ for submodel_number in range(number_of_sub_datasets):
         gram_matrix = np.exp(- nonlinear_svr_gamma * ((selected_autoscaled_x_array[:, np.newaxis] - selected_autoscaled_x_array) ** 2).sum(axis=2))
         variance_of_gram_matrix.append(gram_matrix.var(ddof=1))
     optimal_svr_gamma = svr_gammas[np.where(variance_of_gram_matrix==np.max(variance_of_gram_matrix))[0][0]]
+    cross_validation = KFold(n_splits=fold_number, shuffle=True) # クロスバリデーションの分割の設定
     # CV による ε の最適化
-    model_in_cv = GridSearchCV(SVR(kernel='rbf', C=3, gamma=optimal_svr_gamma), {'epsilon': svr_epsilons},
-                               cv=fold_number)
-    model_in_cv.fit(selected_autoscaled_x, autoscaled_y)
-    optimal_svr_epsilon = model_in_cv.best_params_['epsilon']
+    r2cvs = [] # 空の list。候補ごとに、クロスバリデーション後の r2 を入れていきます
+    for svr_epsilon in svr_epsilons:
+        model = SVR(kernel='rbf', C=3, epsilon=svr_epsilon, gamma=optimal_svr_gamma)
+        autoscaled_estimated_y_in_cv = cross_val_predict(model, autoscaled_x, autoscaled_y, cv=cross_validation)
+        r2cvs.append(r2_score(y, autoscaled_estimated_y_in_cv * y.std() + y.mean()))
+    optimal_svr_epsilon = svr_epsilons[np.where(r2cvs==np.max(r2cvs))[0][0]] # クロスバリデーション後の r2 が最も大きい候補
+    
     # CV による C の最適化
-    model_in_cv = GridSearchCV(SVR(kernel='rbf', epsilon=optimal_svr_epsilon, gamma=optimal_svr_gamma),
-                               {'C': svr_cs}, cv=fold_number)
-    model_in_cv.fit(selected_autoscaled_x, autoscaled_y)
-    optimal_svr_c = model_in_cv.best_params_['C']
+    r2cvs = [] # 空の list。候補ごとに、クロスバリデーション後の r2 を入れていきます
+    for svr_c in svr_cs:
+        model = SVR(kernel='rbf', C=svr_c, epsilon=optimal_svr_epsilon, gamma=optimal_svr_gamma)
+        autoscaled_estimated_y_in_cv = cross_val_predict(model, autoscaled_x, autoscaled_y, cv=cross_validation)
+        r2cvs.append(r2_score(y, autoscaled_estimated_y_in_cv * y.std() + y.mean()))
+    optimal_svr_c = svr_cs[np.where(r2cvs==np.max(r2cvs))[0][0]] # クロスバリデーション後の r2 が最も大きい候補
+    
     # CV による γ の最適化
-    model_in_cv = GridSearchCV(SVR(kernel='rbf', epsilon=optimal_svr_epsilon, C=optimal_svr_c),
-                               {'gamma': svr_gammas}, cv=fold_number)
-    model_in_cv.fit(selected_autoscaled_x, autoscaled_y)
-    optimal_svr_gamma = model_in_cv.best_params_['gamma']
+    r2cvs = [] # 空の list。候補ごとに、クロスバリデーション後の r2 を入れていきます
+    for svr_gamma in svr_gammas:
+        model = SVR(kernel='rbf', C=optimal_svr_c, epsilon=optimal_svr_epsilon, gamma=svr_gamma)
+        autoscaled_estimated_y_in_cv = cross_val_predict(model, autoscaled_x, autoscaled_y, cv=cross_validation)
+        r2cvs.append(r2_score(y, autoscaled_estimated_y_in_cv * y.std() + y.mean()))
+    optimal_svr_gamma = svr_gammas[np.where(r2cvs==np.max(r2cvs))[0][0]] # クロスバリデーション後の r2 が最も大きい候補
 
     # SVR
     submodel = SVR(kernel='rbf', C=optimal_svr_c, epsilon=optimal_svr_epsilon, gamma=optimal_svr_gamma)  # モデルの宣言
