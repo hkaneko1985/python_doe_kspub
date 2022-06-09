@@ -201,5 +201,5 @@ sum_of_log_probabilities = pd.DataFrame(sum_of_log_probabilities, index=x_predic
 sum_of_log_probabilities.to_csv('sum_of_log_probabilities_prediction_multi_y_{0}.csv'.format(regression_method))
 
 # 次のサンプル
-next_sample = x_prediction.iloc[sum_of_log_probabilities.idxmax(), :]  # 次のサンプル
+next_sample = x_prediction.loc[sum_of_log_probabilities.idxmax()]  # 次のサンプル
 next_sample.to_csv('next_sample_bo_multi_y_{0}.csv'.format(regression_method)) # csv ファイルに保存。同じ名前のファイルがあるときは上書きされますので注意してください

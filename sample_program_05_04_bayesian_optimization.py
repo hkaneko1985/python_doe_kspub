@@ -182,5 +182,5 @@ acquisition_function_prediction = pd.DataFrame(acquisition_function_prediction, 
 acquisition_function_prediction.to_csv('acquisition_function_prediction_{0}_{1}.csv'.format(regression_method, acquisition_function))  # 獲得関数を csv ファイルに保存。同じ名前のファイルがあるときは上書きされますので注意してください
 
 # 次のサンプル
-next_sample = x_prediction.iloc[acquisition_function_prediction.idxmax(), :]  # 次のサンプル
+next_sample = x_prediction.loc[acquisition_function_prediction.idxmax()]  # 次のサンプル
 next_sample.to_csv('next_sample_bo_{0}_{1}.csv'.format(regression_method, acquisition_function)) # csv ファイルに保存。同じ名前のファイルがあるときは上書きされますので注意してください

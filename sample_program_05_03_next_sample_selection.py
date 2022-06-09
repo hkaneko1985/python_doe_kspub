@@ -338,5 +338,5 @@ ad_index_prediction.to_csv('ad_index_prediction_{0}.csv'.format(ad_method))  # c
 estimated_y_prediction.to_csv('estimated_y_prediction_considering_ad_{0}_{1}.csv'.format(regression_method, ad_method)) # csv ファイルに保存。同じ名前のファイルがあるときは上書きされますので注意してください
 
 # 次のサンプル
-next_sample = x_prediction.iloc[estimated_y_prediction.idxmax(), :]  # 次のサンプル
+next_sample = x_prediction.loc[estimated_y_prediction.idxmax()]  # 次のサンプル
 next_sample.to_csv('next_sample_{0}_{1}.csv'.format(regression_method, ad_method)) # csv ファイルに保存。同じ名前のファイルがあるときは上書きされますので注意してください
